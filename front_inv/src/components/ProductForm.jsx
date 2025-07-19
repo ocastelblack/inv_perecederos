@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../styles/Form.css"; // NUEVO: agrega este archivo con los estilos base
 
 const API = "http://localhost:8000";
 
@@ -29,7 +30,6 @@ export default function ProductForm() {
       setCategory("");
       setPrice("");
 
-      // Redirigir al inventario
       navigate("/inventario");
     } catch (err) {
       alert(err.response?.data?.detail || "Error al crear producto");
@@ -37,24 +37,25 @@ export default function ProductForm() {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="form-container">
       <h2>Crear Producto</h2>
-      <div style={styles.formGroup}>
+
+      <div className="form-group">
         <label>Nombre:</label>
         <input value={name} onChange={(e) => setName(e.target.value)} />
       </div>
 
-      <div style={styles.formGroup}>
+      <div className="form-group">
         <label>Descripción:</label>
         <input value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
 
-      <div style={styles.formGroup}>
+      <div className="form-group">
         <label>Categoría:</label>
         <input value={category} onChange={(e) => setCategory(e.target.value)} />
       </div>
 
-      <div style={styles.formGroup}>
+      <div className="form-group">
         <label>Precio:</label>
         <input
           type="number"
@@ -65,35 +66,7 @@ export default function ProductForm() {
         />
       </div>
 
-      <button style={styles.button} onClick={createProduct}>
-        Crear Producto
-      </button>
+      <button onClick={createProduct}>Crear Producto</button>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    maxWidth: "400px",
-    margin: "2rem auto",
-    padding: "2rem",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    backgroundColor: "#f9f9f9",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-  },
-  formGroup: {
-    marginBottom: "1rem",
-    display: "flex",
-    flexDirection: "column",
-    textAlign: "left",
-  },
-  button: {
-    padding: "0.5rem 1rem",
-    fontWeight: "bold",
-    backgroundColor: "#282c34",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-  },
-};
