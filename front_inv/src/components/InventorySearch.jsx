@@ -4,24 +4,27 @@ import axios from "axios";
 const API = "http://localhost:8000";
 
 export default function InventorySearch() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [search, setSearch] = useState("");
+  const [result, setResult] = useState([]);
 
-  const search = async () => {
-    if (!query.trim()) return;
-    const res = await axios.get(`${API}/inventory/search?name=${query}`);
-    setResults(res.data);
+  const buscar = async () => {
+    try {
+      const res = await axios.get(`${API}/search?name=${search}`);
+      setResult(res.data);
+    } catch {
+      alert("Producto no encontrado");
+    }
   };
 
   return (
     <div>
-      <input placeholder="Nombre del producto" value={query} onChange={(e) => setQuery(e.target.value)} />
-      <button onClick={search}>Buscar</button>
-
+      <h2>Buscar Productos</h2>
+      <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Nombre del producto" />
+      <button onClick={buscar}>Buscar</button>
       <ul>
-        {results.map((item, index) => (
-          <li key={index}>
-            {item.estado}: {item.cantidad} (vence: {item.vencimiento})
+        {result.map((r) => (
+          <li key={r.id}>
+            {r.name} - {r.description}
           </li>
         ))}
       </ul>

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import Productos from "./pages/Productos";
 import Entradas from "./pages/Entradas";
 import Salidas from "./pages/Salidas";
@@ -8,15 +8,25 @@ import Buscar from "./pages/Buscar";
 function App() {
   return (
     <Router>
-      <nav style={{ padding: "1rem", backgroundColor: "#111", color: "#fff" }}>
-        <Link to="/productos" style={linkStyle}>Productos</Link>
-        <Link to="/entradas" style={linkStyle}>Entradas</Link>
-        <Link to="/salidas" style={linkStyle}>Salidas</Link>
-        <Link to="/inventario" style={linkStyle}>Inventario</Link>
-        <Link to="/buscar" style={linkStyle}>Buscar</Link>
+      <nav style={navStyle}>
+        {[
+          { to: "/productos", label: "Productos" },
+          { to: "/entradas", label: "Entradas" },
+          { to: "/salidas", label: "Salidas" },
+          { to: "/inventario", label: "Inventario" },
+          { to: "/buscar", label: "Buscar" },
+        ].map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            style={({ isActive }) => (isActive ? { ...linkStyle, ...activeLinkStyle } : linkStyle)}
+          >
+            {label}
+          </NavLink>
+        ))}
       </nav>
 
-      <div style={{ padding: "1rem" }}>
+      <div style={mainStyle}>
         <Routes>
           <Route path="/productos" element={<Productos />} />
           <Route path="/entradas" element={<Entradas />} />
@@ -29,11 +39,38 @@ function App() {
   );
 }
 
-const linkStyle = {
-  marginRight: "1rem",
+// Estilos en JS puro
+const navStyle = {
+  padding: "1rem",
+  backgroundColor: "#111",
   color: "#fff",
+  display: "flex",
+  justifyContent: "center",
+  gap: "2rem",
+  boxShadow: "0 2px 5px rgba(0,0,0,0.5)",
+  position: "sticky",
+  top: 0,
+  zIndex: 10,
+};
+
+const linkStyle = {
+  color: "#ddd",
   textDecoration: "none",
-  fontWeight: "bold"
+  fontWeight: "bold",
+  paddingBottom: "4px",
+  borderBottom: "2px solid transparent",
+  transition: "all 0.3s ease",
+};
+
+const activeLinkStyle = {
+  color: "#ffcc00",
+  borderBottom: "2px solid #ffcc00",
+};
+
+const mainStyle = {
+  padding: "2rem",
+  maxWidth: "1000px",
+  margin: "0 auto",
 };
 
 export default App;
