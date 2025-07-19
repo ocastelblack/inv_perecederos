@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/Form.css"; // NUEVO: agrega este archivo con los estilos base
 
 const API = "http://localhost:8000";
 
@@ -29,7 +28,6 @@ export default function ProductForm() {
       setDescription("");
       setCategory("");
       setPrice("");
-
       navigate("/inventario");
     } catch (err) {
       alert(err.response?.data?.detail || "Error al crear producto");
@@ -37,25 +35,19 @@ export default function ProductForm() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Crear Producto</h2>
+    <div className="container">
+      <div className="card">
+        <h2>Crear Producto</h2>
 
-      <div className="form-group">
         <label>Nombre:</label>
         <input value={name} onChange={(e) => setName(e.target.value)} />
-      </div>
 
-      <div className="form-group">
         <label>Descripción:</label>
         <input value={description} onChange={(e) => setDescription(e.target.value)} />
-      </div>
 
-      <div className="form-group">
         <label>Categoría:</label>
         <input value={category} onChange={(e) => setCategory(e.target.value)} />
-      </div>
 
-      <div className="form-group">
         <label>Precio:</label>
         <input
           type="number"
@@ -64,9 +56,9 @@ export default function ProductForm() {
           min="0"
           step="0.01"
         />
-      </div>
 
-      <button onClick={createProduct}>Crear Producto</button>
+        <button onClick={createProduct}>Crear Producto</button>
+      </div>
     </div>
   );
 }

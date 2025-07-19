@@ -1,36 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const API = "http://localhost:8000";
 
-export default function InventoryEntryForm() {
-  const [entry, setEntry] = useState({ product_id: "", quantity: "", expiration_date: "" });
+export default function InventoryExitForm() {
+  const [exit, setExit] = useState({ product_id: "", quantity: "" });
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${API}/inventory`)
+      .then((res) => setProducts(res.data))
+      .catch(() => alert("Error al cargar productos"));
+  }, []);
 
   const handleChange = (e) => {
-    setEntry({ ...entry, [e.target.name]: e.target.value });
+    setExit({ ...exit, [e.target.name]: e.target.value });
   };
 
-  const submitEntry = async () => {
+  const submitExit = async () => {
+    if (!exit.product_id || !exit.quantity) {
+      return alert("Todos los campos son obligatorios");
+    }
+
     try {
-      await axios.post(`${API}/inventory/entry`, {
-        ...entry,
-        product_id: parseInt(entry.product_id),
-        quantity: parseInt(entry.quantity),
+      await axios.post(`${API}/inventory/exit`, {
+        product_id: parseInt(exit.product_id),
+        quantity: parseInt(exit.quantity),
       });
-      alert("Entrada registrada");
-      setEntry({ product_id: "", quantity: "", expiration_date: "" });
+
+      alert("Salida registrada correctamente");
+      setExit({ product_id: "", quantity: "" });
     } catch (err) {
-      alert(err.response?.data?.detail || "Error en entrada");
+      alert(err.response?.data?.detail || "Error al registrar salida");
     }
   };
 
   return (
-    <div>
-      <h2>Agregar Entrada</h2>
-      <input name="product_id" placeholder="ID Producto" value={entry.product_id} onChange={handleChange} />
-      <input name="quantity" placeholder="Cantidad" value={entry.quantity} onChange={handleChange} />
-      <input name="expiration_date" type="date" value={entry.expiration_date} onChange={handleChange} />
-      <button onClick={submitEntry}>Registrar</button>
+    <div className="container">
+      <div className="card">
+        <h2>Registrar Salida</h2>
+
+        <div className="form-group">
+          <label>Producto:</label>
+          <select
+            name="product_id"
+            value={exit.product_id}
+            onChange={handleChange}
+          >
+            <option value="">Seleccione un producto</option>
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name} — {p.category || "Sin categoría"}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Cantidad:</label>
+          <input
+            name="quantity"
+            type="number"
+            min="1"
+            value={exit.quantity}
+            onChange={handleChange}
+          />
+        </div>
+
+        <button onClick={submitExit}>Registrar Salida</button>
+      </div>
     </div>
   );
 }

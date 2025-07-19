@@ -5,15 +5,39 @@ const API = "http://localhost:8000";
 
 export default function InventoryList() {
   const [products, setProducts] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get(`${API}/inventory`).then((res) => setProducts(res.data));
+    axios.get(`${API}/inventory`)
+      .then((res) => {
+        setProducts(res.data);
+        setFiltered(res.data); // Inicialmente mostramos todos
+      });
   }, []);
 
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearch(value);
+    const results = products.filter(p =>
+      p.name.toLowerCase().includes(value)
+    );
+    setFiltered(results);
+  };
+
   return (
-    <div style={styles.container}>
-      <h2>Estado General del Inventario</h2>
-      <table style={styles.table}>
+    <div className="container">
+      <h2>Inventario General</h2>
+
+      <input
+        type="text"
+        placeholder="Buscar producto por nombre"
+        value={search}
+        onChange={handleSearch}
+        style={{ marginBottom: "1rem", width: "100%", padding: "0.5rem" }}
+      />
+
+      <table>
         <thead>
           <tr>
             <th>Nombre</th>
@@ -26,10 +50,10 @@ export default function InventoryList() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {filtered.map((product) => (
             <tr key={product.id}>
               <td>{product.name}</td>
-              <td>{product.description}</td>
+              <td>{product.description || "-"}</td>
               <td>{product.category || "-"}</td>
               <td>${product.price?.toFixed(2) || "-"}</td>
               <td>{product.inventario.vigente}</td>
@@ -42,26 +66,3 @@ export default function InventoryList() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: "2rem",
-    textAlign: "center",
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    marginTop: "1rem",
-    backgroundColor: "#fff",
-    boxShadow: "0 0 8px rgba(0,0,0,0.1)",
-  },
-  th: {
-    backgroundColor: "#282c34",
-    color: "#fff",
-    padding: "0.5rem",
-  },
-  td: {
-    padding: "0.5rem",
-    borderBottom: "1px solid #ccc",
-  },
-};
